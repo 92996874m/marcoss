@@ -15,6 +15,7 @@ N = int(2)
 A = decimal.Decimal(0)
 # B = extremo direito
 B = decimal.Decimal(1)
+# adapted from https://stackoverflow.com/a/9877279
 # y = função de x
 y = x*exp(x) - 2
 f = lambdify(x, y, 'numpy')

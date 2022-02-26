@@ -1,7 +1,8 @@
 import math
 import numpy as np
 import decimal
-from sympy import Symbol, lambdify, exp
+# log = ln
+from sympy import Symbol, lambdify, exp, sqrt, log, cos, sin
 import pandas as pd
 
 x = Symbol('x')

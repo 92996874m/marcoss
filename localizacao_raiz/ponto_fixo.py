@@ -6,13 +6,15 @@ import decimal
 from sympy import Symbol, Float, N, lambdify, exp, sqrt, log, cos, sin
 import pandas as pd
 # import time
+sys.tracebacklimit = 0
 
 x = Symbol('x')
 
 """""""""INPUTS"""""""""
+# N_REQ = número de casas decimais de precisão + 2 casas de sobra
+N_REQ = int(5)
 # N_PREC = número de casas decimais de precisão + 2 casas de sobra
-# Set decimal precision to 2 more than the required significant figures
-N_PREC = int(25) + 2
+N_PREC = N_REQ + 2
 # COLOCAR NÚMEROS DECIMAIS ENTRE ASPAS!!!! SENÃO NÃO TEM PRECISÃO
 # A = extremo esquerdo
 A = Float(-10, N_PREC)
@@ -35,15 +37,9 @@ f = lambdify(x, phi, 'sympy')
 yprime = lambdify(x, phi.diff(x), 'sympy')
 print(yprime)
 
-# print(f(Float(0, 25)))
-# print(type(f))
-# print(f(Float(A, N_PREC)))
-# print(N(f(0), N_PREC))
-
 # Teorema do Valor Intermediário (TVI)
 # verifica se existe _pelo menos 1_ raiz no intervalo
 if f(A) * f(B) > Float(0, N_PREC):
-    sys.tracebacklimit = 0
     print("ERRO!!!")
     raise ValueError(
         f"Favor alterar extremos A e B. Não existe raiz no atual intervalo [{A}, {B}]")
@@ -54,32 +50,43 @@ n_list, a_list, b_list, c_list, f_list, e_list = [], [], [], [], [], []
 n = int(0)
 a = A
 b = B
+# estimativa inicial
+c = Float((a + b) / Float(2, N_PREC), N_PREC)
 
 # fator de contração
-C = max([N(yprime(A), N_PREC), N(yprime(B), N_PREC)])
+# VERIFICAR MANUALMENTE
+C = Float(3, N_PREC) / Float(7, N_PREC)
+# C = max([N(yprime(A), N_PREC), N(yprime(B), N_PREC)])
 print(C)
 
-# while(True):
-#     print(f"Etapa {n} em progresso", flush=True)
-#     # time.sleep(1)
-#     c = Float((a + b) / Float(2, N_PREC), N_PREC)
-#     n += 1
-#     n_list.append(n), a_list.append(a), b_list.append(b), c_list.append(c),
-#     e = (B - A) / (2**n)
-#     f_c = f(c)
-#     f_list.append(f_c), e_list.append(e),
-#     if f_c > 0:
-#         b = c
-#     elif f_c < 0:
-#         a = c
-#     else:
-#         break
-#     if e < 10**(-N_PREC):
-#         break
-# print(c)
+while(True):
+    print(f"Etapa {n} em progresso", flush=True)
+    # time.sleep(1)
+    n += 1
+    n_list.append(n), a_list.append(a), b_list.append(b), c_list.append(c)
+
+    if n < 2:
+        e = Float((abs(a) + abs(b)), N_PREC) / Float(2, N_PREC)
+    else:
+        e = Float(1/(1-C) * (C**n) * abs(c_list[0] - c_list[1]), N_PREC)
+
+    f_c = N(f(c), N_PREC)
+    f_list.append(f_c), e_list.append(e)
+
+    if e < 10**(-N_REQ):
+        break
+    elif n > 3:
+        if float(abs(f_list[n-1]) - abs(f_list[n-2])) > float(e_list[n-2]):
+            print("ERRO!!!")
+            raise ValueError(f"Função está divergindo. Escolha outro intervalo inicial, nem que seja maior.")
+    else:
+        c = f_c
+
+e_list[0] = Float(1/(1-C) * (C**1) * abs(c_list[0] - c_list[1]), N_PREC)
+print(c)
 
 d = {'n': n_list, 'a': a_list, 'b': b_list,
      'c': c_list, 'f_c': f_list, 'e': e_list}
 df = pd.DataFrame(data=d)
 print(df)
-print(f"`{c_list[-1]}` é a melhor estimativa para a raiz `c` da função `{phi}`, com `{N_PREC}` casas decimais de precisão.")
+print(f"`{c_list[-1]}` é a melhor estimativa para a raiz da função `{phi}`, com `{N_REQ}` casas decimais de precisão, com `{len(n_list)}` iterações.")

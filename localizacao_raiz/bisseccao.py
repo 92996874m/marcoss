@@ -62,4 +62,4 @@ d = {'n': n_list, 'a': a_list, 'b': b_list,
      'c': c_list, 'f_c': f_list, 'e': e_list}
 df = pd.DataFrame(data=d)
 print(df)
-print(f"`{c_list[-1]}` é a melhor estimativa para a raiz `c` da função `{y}`, com `{N}` casas decimais de precisão.")
+print(f"`{c_list[-1]}` é a melhor estimativa para a raiz `c` da função `f(x) = {y}`, com `{N}` casas decimais de precisão.")

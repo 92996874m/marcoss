@@ -56,8 +56,7 @@ c = Float((a + b) / Float(2, N_PREC), N_PREC)
 
 # fator de contração
 # VERIFICAR MANUALMENTE
-C = Float(3, N_PREC) / Float(7, N_PREC)
-print(C)
+print("C manual:", C)
 
 # range de derivadas entre A e B
 derivadas_C = [
@@ -67,7 +66,7 @@ derivadas_C = [
 derivadas_C.extend([N(yprime(A), N_PREC), N(yprime(B), N_PREC)])
 # pegar a maior delas
 C = max(derivadas_C)
-print(C)
+print("C calculado:", C)
 
 # Fator de contração tem que ser menor que 1
 if C >= 1:
@@ -77,7 +76,7 @@ if C >= 1:
         
 
 while(True):
-    print(f"Etapa {n} em progresso", flush=True)
+    print(f"Etapa {n} em progresso...", end="\t", flush=True)
     # time.sleep(1)
     n += 1
     n_list.append(n), a_list.append(a), b_list.append(b), c_list.append(c)
@@ -90,21 +89,21 @@ while(True):
     f_c = N(f(c), N_PREC)
     f_list.append(f_c), e_list.append(e)
 
-    if e < 10**(-N_REQ):
-        break
-    elif n > 3:
+    if n > 3:
         if float(abs(f_list[n-1]) - abs(f_list[n-2])) > float(e_list[n-2]):
             print("ERRO!!!")
             raise ValueError(
                 f"Função está divergindo. Escolha outro intervalo inicial, nem que seja maior.")
+    if e < 10**(-N_REQ):
+        break
     else:
         c = f_c
 
 e_list[0] = Float(1/(1-C) * (C**1) * abs(c_list[0] - c_list[1]), N_PREC)
-print(c)
+print("\n", c)
 
 d = {'n': n_list, 'a': a_list, 'b': b_list,
      'c': c_list, 'f_c': f_list, 'e': e_list}
 df = pd.DataFrame(data=d)
 print(df)
-print(f"`{c_list[-1]}` é a melhor estimativa para a raiz da função `{phi}`, com `{N_REQ}` casas decimais de precisão, com `{len(n_list)}` iterações.")
+print(f"`{c_list[-1]}` é a melhor estimativa para a raiz da função `phi(x) = {phi}`, com `{N_REQ}` casas decimais de precisão, com `{len(n_list)}` iterações.")

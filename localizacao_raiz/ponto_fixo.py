@@ -70,8 +70,8 @@ expoente = abs(Integer(N_REQ - 2))
 derivadas_C = [
     N(yprime(i/10**(expoente)), 2)
     for i in range(
-        int(A) * 10**(expoente),
-        int(B) * 10**(expoente)
+        int(A * 10**(expoente)),
+        int(B * 10**(expoente)) 
     )
 ]
 derivadas_C.extend([N(yprime(A), N_PREC), N(yprime(B), N_PREC)])

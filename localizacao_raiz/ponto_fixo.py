@@ -5,28 +5,32 @@ import decimal
 # log = ln
 from sympy import Symbol, Float, Integer, N, lambdify, exp, sqrt, log, cos, sin
 import pandas as pd
-# import time
 sys.tracebacklimit = 0
 
 x = Symbol('x')
+# para inserir funções literais: usar funções do `sympy`
+# ex: sqrt(x) = x ^ (1/2) =(python)= x ** (1/2)
+# inserir valores numéricos das funções: usar funções do `math`
+# ex: math.sqrt(2) = raiz quadrada de 2 = 2^(1/2) =(python)= 2**(1/2)
 
 """""""""INPUTS"""""""""
-# N_REQ = número de casas decimais de precisão + 2 casas de sobra
+# N_REQ = número de casas decimais de precisão
 N_REQ = int(5)
 # N_PREC = número de casas decimais de precisão + 2 casas de sobra
 N_PREC = N_REQ + 2
 # COLOCAR NÚMEROS DECIMAIS ENTRE ASPAS!!!! SENÃO NÃO TEM PRECISÃO
 # A = extremo esquerdo
-A = Float(-10, N_PREC)
+A = Float(-1, N_PREC)
 # B = extremo direito
-B = Float(10, N_PREC)
+B = Float(1, N_PREC)
 # adapted from https://stackoverflow.com/a/9877279
 # se `f(x)` é uma função qualquer de x
 # fazer f(x) = 0
 # isolar x de um lado. Tudo que sobrar do outro é chamado de `phi(x)`
 # de modo a resultar em x = phi(x)
 # trabalharemos apenas com a phi(x).
-phi = (x**3 + 2) / 7
+phi = 1 / (1 + x**2)
+# ex: x**2 * exp(x) + sqrt(x) - ( 1 / log(x) ) * ( 1 / cos(x) ) * sin(x)
 # ex: se f(x) = x^3 - 7x + 2,
 # fazemos f(x) = => x^3 - 7x + 2 = 0
 # isolamos x para ficar x = (x^3 + 2) / 7 = phi(x)
@@ -56,12 +60,19 @@ c = Float((a + b) / Float(2, N_PREC), N_PREC)
 
 # fator de contração
 # VERIFICAR MANUALMENTE
+C = Float(3, N_PREC) * Float(math.sqrt(3), N_PREC) / Float(8, N_PREC)
 print("C manual:", C)
+# raiz quadrada: `math.sqrt()`
 
+"""cálculo automático do fator de contração"""
 # range de derivadas entre A e B
+expoente = abs(Integer(N_REQ - 2))
 derivadas_C = [
-    N(yprime(i/10**(abs(Integer(N_REQ) - Integer(2)))), 2)
-    for i in range(int(A) * 10**(abs(Integer(N_REQ) - Integer(2))), int(B) * 10**(abs(Integer(N_REQ) - Integer(2))))
+    N(yprime(i/10**(expoente)), 2)
+    for i in range(
+        int(A) * 10**(expoente),
+        int(B) * 10**(expoente)
+    )
 ]
 derivadas_C.extend([N(yprime(A), N_PREC), N(yprime(B), N_PREC)])
 # pegar a maior delas
@@ -73,7 +84,6 @@ if C >= 1:
     print("ERRO!!!")
     raise ValueError(
         f"Fator de contração maior que 1. Favor verificar e inserir manualmente o C.")
-        
 
 while(True):
     print(f"Etapa {n} em progresso...", end="\t", flush=True)

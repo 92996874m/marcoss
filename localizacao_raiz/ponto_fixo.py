@@ -3,7 +3,7 @@ import math
 import numpy as np
 import decimal
 # log = ln
-from sympy import Symbol, Float, N, lambdify, exp, sqrt, log, cos, sin
+from sympy import Symbol, Float, Integer, N, lambdify, exp, sqrt, log, cos, sin
 import pandas as pd
 # import time
 sys.tracebacklimit = 0
@@ -39,10 +39,11 @@ print(yprime)
 
 # Teorema do Valor Intermediário (TVI)
 # verifica se existe _pelo menos 1_ raiz no intervalo
-if f(A) * f(B) > Float(0, N_PREC):
-    print("ERRO!!!")
-    raise ValueError(
-        f"Favor alterar extremos A e B. Não existe raiz no atual intervalo [{A}, {B}]")
+# NÃO APLICÁVEL AQUI, QUEREMOS PHI(X) = X, e não 0
+# if f(A) * f(B) > Float(0, N_PREC):
+#     print("ERRO!!!")
+#     raise ValueError(
+#         f"Favor alterar extremos A e B. Não existe raiz no atual intervalo [{A}, {B}]")
 
 n_list, a_list, b_list, c_list, f_list, e_list = [], [], [], [], [], []
 
@@ -56,8 +57,24 @@ c = Float((a + b) / Float(2, N_PREC), N_PREC)
 # fator de contração
 # VERIFICAR MANUALMENTE
 C = Float(3, N_PREC) / Float(7, N_PREC)
-# C = max([N(yprime(A), N_PREC), N(yprime(B), N_PREC)])
 print(C)
+
+# range de derivadas entre A e B
+derivadas_C = [
+    N(yprime(i/10**(abs(Integer(N_REQ) - Integer(2)))), 2)
+    for i in range(int(A) * 10**(abs(Integer(N_REQ) - Integer(2))), int(B) * 10**(abs(Integer(N_REQ) - Integer(2))))
+]
+derivadas_C.extend([N(yprime(A), N_PREC), N(yprime(B), N_PREC)])
+# pegar a maior delas
+C = max(derivadas_C)
+print(C)
+
+# Fator de contração tem que ser menor que 1
+if C >= 1:
+    print("ERRO!!!")
+    raise ValueError(
+        f"Fator de contração maior que 1. Favor verificar e inserir manualmente o C.")
+        
 
 while(True):
     print(f"Etapa {n} em progresso", flush=True)
@@ -78,7 +95,8 @@ while(True):
     elif n > 3:
         if float(abs(f_list[n-1]) - abs(f_list[n-2])) > float(e_list[n-2]):
             print("ERRO!!!")
-            raise ValueError(f"Função está divergindo. Escolha outro intervalo inicial, nem que seja maior.")
+            raise ValueError(
+                f"Função está divergindo. Escolha outro intervalo inicial, nem que seja maior.")
     else:
         c = f_c
 

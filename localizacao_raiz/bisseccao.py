@@ -5,8 +5,9 @@ import decimal
 # log = ln
 from sympy import Symbol, lambdify, exp, sqrt, log, cos, sin
 import pandas as pd
+# import time
 
-x = Symbol('x')
+x = Symbol('x', real=True)
 
 """""""""INPUTS"""""""""
 # N = número de casas decimais de precisão
@@ -42,6 +43,7 @@ a = A
 b = B
 while(True):
     print(f"Etapa {n} em progresso", flush=True)
+    # time.sleep(1)
     c = decimal.Decimal((a + b) / decimal.Decimal("2"))
     n += 1
     n_list.append(n), a_list.append(a), b_list.append(b), c_list.append(c),

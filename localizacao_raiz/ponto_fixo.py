@@ -7,7 +7,7 @@ from sympy import Symbol, Float, Integer, N, lambdify, exp, sqrt, log, cos, sin
 import pandas as pd
 sys.tracebacklimit = 0
 
-x = Symbol('x')
+x = Symbol('x', real=True)
 # para inserir funções literais: usar funções do `sympy`
 # ex: sqrt(x) = x ^ (1/2) =(python)= x ** (1/2)
 # inserir valores numéricos das funções: usar funções do `math`

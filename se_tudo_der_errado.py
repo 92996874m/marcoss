@@ -9,9 +9,10 @@ INSTRUÇÕES
 
 1) Ir para https://live.sympy.org/
 2) Substituir a função `f` apropriada
-3) Copiar o código abaixo, entre os sinais de # %%%%...
-4) Clicar em "Evaluate"
-5) O resultado irá aparecer como o exemplo:
+3) Determinar o número de casas decimais de precisão `N_REQ` desejado 
+4) Copiar o código abaixo, entre os sinais de # %%%%...
+5) Clicar em "Evaluate"
+6) O resultado irá aparecer como o exemplo:
     "
     Solução: o zero (raiz) da função está em:
     0.289
